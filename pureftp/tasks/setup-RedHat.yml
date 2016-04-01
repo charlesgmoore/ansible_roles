@@ -1,0 +1,25 @@
+---
+- name: Ensure pure-ftpd is installed.
+  yum: pkg=pure-ftpd state=installed enablerepo=epel
+
+- name: Deny anonymous login
+  lineinfile: dest=/etc/pure-ftpd/pure-ftpd.conf regexp="^NoAnonymous" line="NoAnonymous       yes"
+  notify: restart pure-ftpd
+
+- name: Allow for Virtual Users
+  lineinfile: dest=/etc/pure-ftpd/pure-ftpd.conf regexp="^PureDB" insertafter="^# PureDB" line="PureDB                        /etc/pure-ftpd/pureftpd.pdb"
+  notify: restart pure-ftpd
+
+- name: Change MinUID
+  lineinfile: dest=/etc/pure-ftpd/pure-ftpd.conf regexp="^MinUID" insertafter="^#MinUID" line="MinUID                      14"
+  notify: restart pure-ftpd
+
+- name: Allow Unix Authentication
+  lineinfile: dest=/etc/pure-ftpd/pure-ftpd.conf regexp="^UnixAuthentication" insertafter="^#UnixAuthentication" line="UnixAuthentication       yes"
+  when: ansible_distribution_major_version|int < 7
+  notify: restart pure-ftpd
+
+- name: Allow IPV4 Only
+  lineinfile: dest=/etc/pure-ftpd/pure-ftpd.conf regexp="^IPV4Only" insertafter="^#IPV4Only" line="IPV4Only       yes"
+  when: ansible_distribution_major_version|int >= 7
+  notify: restart pure-ftpd

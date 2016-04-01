@@ -1,0 +1,5 @@
+---
+wp_url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+wp_ex_path: /usr/local/bin/wp
+wp_root: /usr/local/src/wp-cli/
+wp_phar: wp-cli.phar

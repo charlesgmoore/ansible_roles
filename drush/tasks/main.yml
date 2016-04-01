@@ -1,0 +1,31 @@
+---
+- name: Verify all drush version directories exist
+  file: 
+    path: "{{drush_path}}/drush{{ item }}"
+    state: directory 
+    mode: 0755
+    group: root
+    owner: root
+  with_items:
+      - "{{ drush_versions }}"
+
+- name: Install drush versions via composer
+  shell: "/usr/local/bin/composer --ignore-platform-reqs require drush/drush:{{ item }}.*"
+  args:
+    chdir: "{{ drush_path }}/drush{{item}}"
+    creates: "{{ drush_path }}/drush{{ item }}/vendor/drush/drush/drush"
+  with_items: "{{ drush_versions }}"
+
+##Configure symlinks
+- name: Configure drush version symlinks
+  file:
+    src: "{{ drush_path }}/drush{{ item }}/vendor/drush/drush/drush"
+    dest: "{{ drush_bin }}{{ item }}"
+    state: link
+  with_items: "{{ drush_versions }}"
+
+- name: Configure default version symlinks
+  file:
+    src: "{{ drush_path }}/drush{{ drush_default_version }}/vendor/drush/drush/drush"
+    dest: "{{ drush_bin }}"
+    state: link

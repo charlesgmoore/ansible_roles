@@ -1,0 +1,3 @@
+---
+maldet_path: /usr/local/maldetect
+maldet_git: https://gitlab.blackmesh.com/internal/maldetect.git

@@ -1,0 +1,14 @@
+---
+- name: verify resolv.conf.d/base exists
+  file: path={{ resolv_conf }} state=touch mode=0644 group=root owner=root
+
+- name: Make sure nameservers are in {{ resolv_conf }}
+  lineinfile: dest={{ resolv_conf }} state=present line="nameserver {{item}}" insertafter="{{ search_domain }}"
+  with_items:
+     - "{{ name_server1 }}"
+     - "{{ name_server2 }}"
+
+#Load settings into resolv.conf
+- name: running resolvconf
+  shell: resolvconf -u
+

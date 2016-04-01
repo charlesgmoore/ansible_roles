@@ -1,0 +1,18 @@
+---
+- name: Copy Solr file over to server
+  copy: src=solr-5.5.0.tgz dest=/opt/ owner=root group=root mode=0644
+
+- name: Extract install script
+  shell: tar -C /opt/ -xzf /opt/solr-5.5.0.tgz solr-5.5.0/bin/install_solr_service.sh --strip-components=2
+
+- name: Run installer script
+  shell: bash /opt/install_solr_service.sh /opt/solr-5.5.0.tgz
+
+- name: Create initial core named 'solr_core'
+  shell: sudo -Hu solr /opt/solr/bin/solr create -c solr_core
+
+- name: Remove solr .tgz file
+  file: path=/opt/solr-5.5.0.tgz state=absent
+
+- name: Remove installer script
+  file: path=/opt/install_solr_service.sh state=absent

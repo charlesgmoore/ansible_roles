@@ -1,0 +1,11 @@
+---
+##Versions of drush
+drush_versions:
+  - 6
+  - 7
+  - 8
+##Drush vars
+
+drush_bin: /usr/local/bin/drush
+drush_path: /opt/scripts/drush
+drush_default_version: 7

@@ -1,0 +1,5 @@
+---
+haproxy_cfg: haproxy.cfg
+haproxy_dir: /etc/haproxy/
+haproxy_ssl_dir: /etc/pki/tls/certs/haproxy/
+haproxy_ssl_cert_gen: openssl req -sha256 -x509 -nodes -days 3650 -subj "/C=US/ST=Virginia/L=Ashburn/O=BlackMesh Inc./OU=IT/CN=$(hostname)" -newkey rsa:4096 -keyout /etc/pki/tls/certs/haproxy/selfsigned.pem -out /etc/pki/tls/certs/haproxy/selfsigned.pem

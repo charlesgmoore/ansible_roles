@@ -1,0 +1,28 @@
+---
+- name: Disable SSL
+  shell: echo > {{ conf_d }}ssl.conf
+
+- name: Install OpenVPN vhost
+  template: src=00_ovpn_default.conf.j2 dest={{ conf_d }}00_ovpn_default.conf 
+
+- name: Install OpenVPN rpm file -- CentOS7
+  yum: name="{{ openvpn_cent7_rpm }}" state=present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+
+- name: Install OpenVPN rpm file -- CentOS6
+  yum: name="{{ openvpn_cent6_rpm }}" state=present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "6"
+
+- name: Generate random password for openvpn user
+  shell: /usr/bin/pwgen 12
+  register: random_password
+###
+###This password needs to be put into a comment in UBER
+- name: openvpn user password
+  user: name=openvpn password={{ random_password.stdout | password_hash("sha512")  }}
+###This password needs to be put into a comment in UBER
+#Usually in the form of:
+#https://fqdn:943/admin
+#Username: openvpn 
+#Password: password from above
+###

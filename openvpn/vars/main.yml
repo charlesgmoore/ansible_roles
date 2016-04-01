@@ -1,0 +1,4 @@
+---
+openvpn_cent7_rpm: http://swupdate.openvpn.org/as/openvpn-as-2.0.24-CentOS7.x86_64.rpm
+openvpn_cent6_rpm: http://swupdate.openvpn.org/as/openvpn-as-2.0.24-CentOS6.x86_64.rpm
+conf_d: /etc/httpd/conf.d/

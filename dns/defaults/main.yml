@@ -1,0 +1,7 @@
+---
+avahi_state: stopped
+network_manager_state: stopped
+search_domain: search blackmesh.com
+name_server1: 74.121.192.67
+name_server2: 74.121.197.78
+search_options: options single-request-reopen

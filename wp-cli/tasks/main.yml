@@ -1,0 +1,24 @@
+---
+##Ensure that the /usr/local/src/wp-cli exists
+- name: Verify "{{ wp_root }}" exists
+  file: 
+    path: "{{ wp_root }}"
+    state: directory 
+    mode: 0755
+    group: root
+    owner: root
+
+##Download wp-cli.phar
+- name: Download "{{ wp_phar }}"
+  get_url: 
+    url: "{{ wp_url }}" 
+    dest: "{{ wp_root }}" 
+    mode: 755
+
+##Create symlink to /usr/local/bin
+- name: Create link to "{{ wp_ex_path }}"
+  file:
+    src: "{{ wp_root }}{{ wp_phar }}"
+    dest: "{{ wp_ex_path }}"
+    state: link
+    

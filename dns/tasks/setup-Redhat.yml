@@ -1,0 +1,20 @@
+---
+- name: Disabling and stopping NetworkManager
+  service: name=NetworkManager state={{ network_manager_state }} enabled={{ (network_manager_state == "started") | ternary('yes','no') }}
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+  ignore_errors: True
+
+- name: Get a list of eths to configure
+  shell: ls /etc/sysconfig/network-scripts/ifcfg-e*
+  register: network_interfaces
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Remove Default PEERDNS=no for all network interfaces
+  lineinfile: 
+        dest={{ item }}
+        regexp='PEERDNS'
+        line="PEERDNS=no"
+        state=present
+  with_items: network_interfaces.stdout_lines
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+  notify: restart network

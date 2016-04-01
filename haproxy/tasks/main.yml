@@ -1,0 +1,40 @@
+---
+- name: Create SSL cert directory
+  file: path={{ haproxy_ssl_dir }} state=directory mode=0755
+  notify: restart haproxy
+
+- name: Create self signed cert for HAProxy
+  shell: "{{ haproxy_ssl_cert_gen }} creates=/etc/pki/tls/certs/haproxy/selfsigned.pem"
+  notify: restart haproxy
+
+- name: Install PPA for HAProxy 1.5 latest on Ubuntu
+  apt_repository: repo='ppa:vbernat/haproxy-1.5'
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install backports for Debian
+  apt_repository: repo='deb http://http.debian.net/debian {{ansible_distribution_release}}-backports main' state=present update_cache=yes
+  when: ansible_distribution == "Debian"
+
+- name: Install HAProxy (RedHat)
+  yum: name=haproxy state=latest
+  when: ansible_os_family == 'RedHat'
+
+- name: Install HAProxy (Debian)
+  apt: name=haproxy state=latest update_cache=yes default_release={{ansible_distribution_release}}-backports
+  when: ansible_distribution == "Debian"
+
+- name: Install HAProxy (Ubuntu)
+  apt: name=haproxy state=latest update_cache=yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Copy over BM haproxy.cfg
+  copy: src=haproxy.cfg dest={{ haproxy_dir }}{{ haproxy_cfg }} owner=root group=root mode=0644 force=no
+  notify: restart haproxy
+
+- name: Add enabled line into wheezy /etc/default/haproxy
+  lineinfile: dest=/etc/default/haproxy regexp='^ENABLED.+$' insertafter=EOF line='ENABLED=1' state=present
+  when: ansible_os_family == "Debian"
+  notify: restart haproxy
+
+- name: Start HAProxy service and enable on boot (if this fails, check to see what is running on port 80)
+  service: name=haproxy state=started enabled=yes

@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+    ServerName {{ ansible_fqdn }}
+ 
+    RedirectPermanent / https://{{ ansible_fqdn }}
+</VirtualHost>
+
+##Example if client wants to use own domain name##
+#<VirtualHost *:80>
+#    ServerName vpn.foo.com
+#    ServerAlias {{ ansible_fqdn }}
+# 
+#    RedirectPermanent / https://vpn.foo.com
+#</VirtualHost>

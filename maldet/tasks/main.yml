@@ -1,0 +1,34 @@
+---
+- name: Ensure clamav package is installed (RedHat)
+  yum: name=clamav state=latest
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure clamav package is installed (Debian)
+  apt: name=clamav state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Installing freshclam extra package for CentOS7
+  yum: name=clamav-update state=latest
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: Verify directories
+  file: path="{{ maldet_path }}" state=directory mode=0755 group=root owner=root
+
+- name: Grab maldet source from git
+  git: repo="{{ maldet_git }}" dest="{{ maldet_path}}" update=yes force=yes
+  changed_when: False
+
+- name: Enable freshclam.conf on CentOS7
+  lineinfile:
+     dest: /etc/freshclam.conf
+     regexp: "^Example"
+     state: absent
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"  
+
+- name: Create maldet cron job
+  cron:
+    name: Maldet cron
+    job: "{{ maldet_path }}/cron.sh > /dev/null 2>&1"
+    hour: 3
+    minute: 30
+    weekday: 7

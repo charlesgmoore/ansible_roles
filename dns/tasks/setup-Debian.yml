@@ -1,0 +1,5 @@
+---
+- name: Install resolvconf
+  action: apt pkg={{ item }} state=installed update-cache=yes
+  with_items:
+    - resolvconf

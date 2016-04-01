@@ -1,0 +1,26 @@
+---
+- name: verify resolv.conf exists
+  file: path={{ resolv_conf }} state=touch mode=0644 group=root owner=root
+  when: ansible_distribution == "CentOS"
+
+- name: Make sure search blackmesh.com is in resolv.conf
+  lineinfile: dest={{ resolv_conf }} state=present line="{{ search_domain }}" create=true mode=0644 group=root owner=root
+  when: ansible_distribution == "CentOS"
+
+
+- name: Make sure nameservers are in /etc/resolv.conf
+  lineinfile: dest={{ resolv_conf }} state=present line="nameserver {{item}}" insertafter="{{ search_domain }}"
+  with_items:
+     - "{{ name_server1 }}"
+     - "{{ name_server2 }}"
+  when: ansible_distribution == "CentOS"
+
+
+- name: Make sure options single-request-reopen is in resolv.conf
+  lineinfile: dest={{ resolv_conf }} state=present line="{{ search_options }}"
+  when: ansible_distribution == "CentOS"
+
+- name: Disabling and stopping 'avahi'
+  service: name=avahi-daemon state={{ avahi_state }} enabled={{ (avahi_state == "started") | ternary('yes','no') }}
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+  ignore_errors: True

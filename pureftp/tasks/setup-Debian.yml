@@ -1,0 +1,27 @@
+---
+- name: Ensure pure-ftpd is installed.
+  apt: pkg=pure-ftpd state=installed
+
+- name: Daemonize service
+  lineinfile: dest=/etc/pure-ftpd/conf/Daemonize create=yes line="yes"
+  notify: restart pure-ftpd
+
+- name: Prohibit Anonymous users
+  lineinfile: dest=/etc/pure-ftpd/conf/NoAnonymous create=yes line="yes"
+  notify: restart pure-ftpd
+
+- name: Enable chroot
+  lineinfile: dest=/etc/pure-ftpd/conf/ChrootEveryone create=yes line="yes"
+  notify: restart pure-ftpd
+
+- name: Enable only IPv4
+  lineinfile: dest=/etc/pure-ftpd/conf/IPV4Only create=yes line="yes"
+  notify: restart pure-ftpd
+
+- name: Enable MinUsers
+  lineinfile: dest=/etc/pure-ftpd/conf/MinUID regexp="^1000" backrefs=yes line="14"
+  notify: restart pure-ftpd
+
+- name: Disable PAM auth
+  lineinfile: dest=/etc/pure-ftpd/conf/PAMAuthentication regexp="^yes" backrefs=yes line="no"
+  notify: restart pure-ftpd

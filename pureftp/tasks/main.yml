@@ -1,0 +1,9 @@
+---
+- include: setup-RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- include: setup-Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Enable pure-ftpd package on boot
+  service: name=pure-ftpd enabled=yes state=started
