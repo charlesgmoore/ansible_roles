@@ -18,6 +18,7 @@
     name: varnish
     state: installed
     enablerepo: "{{ varnish_yum_enablerepo }}"
+    disablerepo: "*"
 
 - name: Copy Varnish configuration (sysvinit).
   template:

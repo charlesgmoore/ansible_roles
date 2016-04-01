@@ -2,9 +2,15 @@
 varnish_version: "4.0"
 varnish_use_default_vcl: true
 varnish_default_vcl_template_path: active.vcl.j2
+varnish_default_backend_host: "127.0.0.1"
+varnish_default_backend_port: "80"
 varnish_listen_port: "80"
 varnish_secret: "14bac2e6-1e34-4770-8078-974373b722ed"
 varnish_config_path: /etc/varnish
 varnish_admin_listen_host: "127.0.0.1"
 varnish_admin_listen_port: "6082"
 varnish_storage: "file,/var/lib/varnish/varnish_storage.bin,256M"
+
+#TODO: Get simon's latest vlc for v4
+#TODO: Make sure these variables end up in the active.vcl
+#TODO: Generate a varnish secret in playbook

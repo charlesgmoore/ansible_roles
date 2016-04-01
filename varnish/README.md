@@ -8,6 +8,19 @@ An Ansible Role that installs Varnish on RedHat/CentOS or Debian/Ubuntu Linux.
 
 Requires the EPEL repository on RedHat/CentOS (you can install it using the `geerlingguy.repo-epel` role).
 
+
+
+
+
+######SOLOMON
+On CentOS7 needs the package 'redhat-rpm-config'
+######
+
+
+
+
+
+
 ## Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
@@ -25,6 +38,11 @@ The path in which Varnish configuration files will be stored.
 Whether to use the included (simplistic) default Varnish VCL, using the backend host/port defined with the next two variables. Set this to `false` and copy your own `default.vcl` file into the `varnish_config_path` if you'd like to use a more complicated setup. If this variable is set to `true`, all other configuration will be taken from Varnish's own [default VCL](https://www.varnish-cache.org/trac/browser/bin/varnishd/default.vcl?rev=3.0).
 
     varnish_default_vcl_template_path: default.vcl.j2
+
+The default VCL file to be copied (if `varnish_use_default_vcl` is `true`). Defaults the the simple template inside `templates/default.vcl.j2`. This path should be relative to the directory from which you run your playbook.
+
+    varnish_default_backend_host: "127.0.0.1"
+    varnish_default_backend_port: "8080"
 
 Some settings for the default "default.vcl" template that will be copied to the `varnish_config_path` folder. The default backend host/port could be Apache or Nginx (or some other HTTP server) running on the same host or some other host (in which case, you might use port 80 instead).
 

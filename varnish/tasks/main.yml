@@ -1,15 +1,4 @@
 ---
-- name: Determine if varnish_config_path exists
-  stat: path={{ varnish_config_path }}
-  register: varnish_installed
-
-- name: Checkout Varnish VCL
-  git: repo=https://gitlab.blackmesh.com/repo/Varnish-VCL.git dest="{{ varnish_config_path }}" force=yes depth=1 version=varnish{{ varnish_version }}
-  when: not varnish_installed.stat.exists
-
-- name: Remove .git folder
-  file: path={{ varnish_config_path }}/.git/config state=absent
-
 - include: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
@@ -20,6 +9,16 @@
   file:
     path: "{{ varnish_config_path }}"
     state: directory
+
+- name: Copy Varnish default VCL.
+  template:
+    src: "{{ varnish_default_vcl_template_path }}"
+    dest: "{{ varnish_config_path }}/active.vcl"
+    owner: root
+    group: root
+    mode: 0644
+  when: varnish_use_default_vcl
+  notify: restart varnish
 
 - name: Copy varnish secret.
   template:
